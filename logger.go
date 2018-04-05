@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"bitbucket.org/skeleton-api/config"
+	"bitbucket.org/gismart/skeleton-api/config"
 	log "github.com/sirupsen/logrus"
 )
 

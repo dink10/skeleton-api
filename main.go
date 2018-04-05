@@ -6,7 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"bitbucket.org/skeleton-api/config"
+	"bitbucket.org/gismart/skeleton-api/config"
 )
 
 // Server represents the core struct of this service
