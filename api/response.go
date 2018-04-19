@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// weiteResponseJSON sends a response with status and data
+// writeResponseJSON sends a response with status and data
 func writeResponseJSON(w http.ResponseWriter, r *http.Request, status int, data interface{}) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {

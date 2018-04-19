@@ -1,31 +1,43 @@
 package config
 
 import (
-	"github.com/koding/multiconfig"
+	"os"
+
 	log "github.com/sirupsen/logrus"
 )
 
-// TemplateConfig TODO: Change it's name and fields according to your requirements!
-type TemplateConfig struct {
+const assignedDefaultMsg = "Assigned default value to"
+
+// APIConfig describes service configuration
+type APIConfig struct {
 	Port     string `default:"8282"`
 	LogLevel string `default:"debug"`
 }
 
 // LoadConfig loads configuration
-func LoadConfig() *TemplateConfig {
-	config := &TemplateConfig{}
-	m := multiconfig.New()
-	log.Infof("Loading configuration...")
-	err := m.Load(config)
-	if err != nil {
-		log.Fatalf("Failed to load configuration. %v", err)
-	}
+func LoadConfig() *APIConfig {
+	config := &APIConfig{}
 
-	err = m.Validate(config)
-	if err != nil {
-		log.Fatal(err)
-	}
 	log.Infof("%+v\n", config)
 
 	return config
+}
+
+func loadEnvVars() *APIConfig {
+	config := &APIConfig{}
+	config.LogLevel = os.Getenv("LOG_LEVEL")
+	config.Port = os.Getenv("PORT")
+	return config
+}
+
+func validateConfig(cfg *APIConfig) {
+	if cfg.Port == "" {
+		cfg.Port = "3000"
+		log.Infof("%s PORT: %s", assignedDefaultMsg, cfg.Port)
+	}
+
+	if cfg.LogLevel == "" {
+		cfg.LogLevel = "error"
+		log.Infof("%s LOG_LEVEL: %s", assignedDefaultMsg, cfg.Port)
+	}
 }

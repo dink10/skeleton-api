@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"net/http"
@@ -13,15 +13,7 @@ var adapters []adapter
 
 // all middleware should be set here
 func init() {
-	adapters = []adapter{loggerHandler(), handlers.CompressHandler}
-}
-
-func newRouter(srv *Server) *mux.Router {
-	router := mux.NewRouter().StrictSlash(true)
-
-	healthCheckHandlers(router)
-
-	return router
+	adapters = []adapter{loggerMiddleware(), handlers.CompressHandler}
 }
 
 // wrapMiddleware wraps handler with all specified middlewares
@@ -36,6 +28,6 @@ func adapt(h http.Handler) http.Handler {
 	return h
 }
 
-func healthCheckHandlers(router *mux.Router) {
-	router.Methods("GET").Path("/index").Handler(wrapMiddleware(healthCheck))
+func addBasicRoutes(srv *Server, router *mux.Router) {
+	router.Methods("GET").Path("/index").Handler(wrapMiddleware(srv.healthCheck))
 }
