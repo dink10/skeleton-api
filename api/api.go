@@ -1,7 +1,10 @@
 package api
 
 import (
+	"net/http"
+
 	"bitbucket.org/gismart/skeleton-api/config"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -11,11 +14,11 @@ type Server struct {
 }
 
 // InitializeAPI initializes API service with all necessary routes and returns configured router
-func InitializeAPI(config *config.APIConfig) *mux.Router {
+func InitializeAPI(config *config.APIConfig) http.Handler {
 	srv := &Server{config: config}
 	router := mux.NewRouter().StrictSlash(true)
 
 	addBasicRoutes(srv, router)
 
-	return router
+	return handlers.RecoveryHandler()(router)
 }
