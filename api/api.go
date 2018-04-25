@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"os"
 
 	"bitbucket.org/gismart/skeleton-api/config"
 	"github.com/gorilla/handlers"
@@ -20,5 +21,6 @@ func InitializeAPI(config *config.APIConfig) http.Handler {
 
 	addBasicRoutes(srv, router)
 
-	return handlers.RecoveryHandler()(router)
+	// middleware that should be applied to all requests
+	return handlers.CombinedLoggingHandler(os.Stdout, handlers.RecoveryHandler()(router))
 }

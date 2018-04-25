@@ -10,14 +10,15 @@ const assignedDefaultMsg = "Assigned default value to"
 
 // APIConfig describes service configuration
 type APIConfig struct {
-	Port     string `default:"8282"`
-	LogLevel string `default:"debug"`
+	Port     string
+	LogLevel string
 }
 
 // LoadConfig loads configuration
 func LoadConfig() *APIConfig {
 	config := &APIConfig{}
-
+	loadEnvVars()
+	validateConfig(config)
 	log.Infof("%+v\n", config)
 
 	return config
@@ -37,7 +38,7 @@ func validateConfig(cfg *APIConfig) {
 	}
 
 	if cfg.LogLevel == "" {
-		cfg.LogLevel = "error"
-		log.Infof("%s LOG_LEVEL: %s", assignedDefaultMsg, cfg.Port)
+		cfg.LogLevel = "info"
+		log.Infof("%s LOG_LEVEL: %s", assignedDefaultMsg, cfg.LogLevel)
 	}
 }

@@ -13,7 +13,7 @@ var adapters []adapter
 
 // all middleware should be set here
 func init() {
-	adapters = []adapter{loggerMiddleware(), handlers.CompressHandler}
+	adapters = []adapter{handlers.CompressHandler}
 }
 
 // wrapMiddleware wraps handler with all specified middlewares
