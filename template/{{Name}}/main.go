@@ -1,4 +1,4 @@
-package __Name__
+package main
 
 import (
 	"fmt"
