@@ -1,9 +1,9 @@
-package main
+package __Name__
 
 import (
 	"os"
 
-	"bitbucket.org/gismart/skeleton-api/config"
+	"bitbucket.org/gismart/{{Name}}/config"
 	log "github.com/sirupsen/logrus"
 )
 
