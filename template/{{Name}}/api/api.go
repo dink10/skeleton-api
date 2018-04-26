@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"os"
 
-	"bitbucket.org/gismart/skeleton-api/config"
+	"bitbucket.org/gismart/{{Name}}/config"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )

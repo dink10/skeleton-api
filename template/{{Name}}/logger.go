@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"bitbucket.org/gismart/skeleton-api/config"
+	"bitbucket.org/gismart/{{Name}}/config"
 	log "github.com/sirupsen/logrus"
 )
 

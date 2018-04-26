@@ -6,8 +6,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"bitbucket.org/gismart/skeleton-api/api"
-	"bitbucket.org/gismart/skeleton-api/config"
+	"bitbucket.org/gismart/{{Name}}/api"
+	"bitbucket.org/gismart/{{Name}}/config"
 )
 
 func main() {

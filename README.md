@@ -1,2 +1,19 @@
-This is a REST-API server template with some predefined stuff. Just clone & copy this project and don't waste time on setting things up.
+# Skeleton API
+This is a REST-API server template with some predefined stuff. Don't waste time on setting things up.
 
+## Usage
+- [Install](https://github.com/tmrts/boilr/wiki/Installation) boilr
+- Clone this repository
+    ```
+    $ cd $GOPATH/src/bitbucket.org/gismart/
+    $ git clone git@bitbucket.org:gismart/skeleton-api.git
+    ```
+- Save template to the boilr
+    ```
+    $ boilr template save $GOPATH/src/bitbucket.org/gismart/skeleton-api skeleton
+    ```
+- Create new project use this template
+    ```
+    $ boilr template use skeleton $GOPATH/src/bitbucket.org/gismart
+    ```
+    
