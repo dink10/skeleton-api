@@ -1,6 +1,10 @@
-/vendor
+# COMMON
+debug
+skeleton-api
+
+# IDE
 /.vscode
 /.idea
-debug
 
-skeleton-api
+# VENDORING
+/vendor

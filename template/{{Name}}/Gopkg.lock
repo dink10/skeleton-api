@@ -2,47 +2,26 @@
 
 
 [[projects]]
-  name = "github.com/gorilla/context"
-  packages = ["."]
-  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
-  version = "v1.1"
-
-[[projects]]
-  name = "github.com/gorilla/handlers"
-  packages = ["."]
-  revision = "90663712d74cb411cbef281bc1e08c19d1a76145"
-  version = "v1.3.0"
-
-[[projects]]
-  name = "github.com/gorilla/mux"
-  packages = ["."]
-  revision = "53c1911da2b537f792e7cafcb446b05ffe33b996"
-  version = "v1.6.1"
-
-[[projects]]
-  name = "github.com/sirupsen/logrus"
-  packages = ["."]
-  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
-  version = "v1.0.5"
-
-[[projects]]
   branch = "master"
-  name = "golang.org/x/crypto"
-  packages = ["ssh/terminal"]
-  revision = "2b6c08872f4b66da917bb4ce98df4f0307330f78"
-
-[[projects]]
-  branch = "master"
-  name = "golang.org/x/sys"
+  name = "bitbucket.org/gismart/config"
   packages = [
-    "unix",
-    "windows"
+    ".",
+    "source",
+    "source/env",
+    "source/file",
+    "source/flag"
   ]
-  revision = "79b0c6888797020a994db17c8510466c72fe75d9"
+  revision = "0bcab6939ff5e8b60f48f716d83d5f8a24c409d9"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d6b46c3fc61188cf25bc8f427109290550e4845ae05631ac0949ef2884ca6119"
+  inputs-digest = "6b501b878d51ef2f204205f6e3f3e2af3240b45b036d8568a3b63f86df755985"
   solver-name = "gps-cdcl"
   solver-version = 1

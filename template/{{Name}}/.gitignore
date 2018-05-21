@@ -1,6 +1,9 @@
-/vendor
-/.vscode
-/.idea
+# COMMON
 debug
 
-{{Name}}
+# IDE
+/.vscode
+/.idea
+
+# VENDORING
+/vendor
