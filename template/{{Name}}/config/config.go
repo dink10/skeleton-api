@@ -10,25 +10,18 @@ import (
 
 const pth = "PATH/TO/CONFIG.JSON"
 
-var Config = schema{}
-
 func init() {
-	loadConfig(&Config)
-}
-
-func loadConfig(cfg *schema) {
 	// By default, the loader loads all the keys from the environment.
 	// The loader can take other configuration source as parameters.
-	loader := config.NewLoader(
+	err := config.NewLoader(
 		// IMPORTANT: sources should be provided in accordance
 		// with the priority from the minor to the major
 		file.New(pth),
 		env.New(),
 		flag.New(),
-	)
+		// Loading configuration
+	).Load(&Config)
 
-	// Loading configuration
-	err := loader.Load(cfg)
 	if err != nil {
 		panic(errors.Wrap(err, "error on loading config"))
 	}
