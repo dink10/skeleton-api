@@ -12,5 +12,5 @@ func HealthCheck(w http.ResponseWriter, r *http.Request) {
 
 // Status returns brief status based on HealthCheck results
 func Status(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(resp, "OK")
+	fmt.Fprint(r, "OK")
 }
