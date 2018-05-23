@@ -4,7 +4,7 @@ import (
     "fmt"
     "net/http"
     cfg "bitbucket.org/gismart/{{Name}}/config"
-    log "bitbucket.org/gismart/{{Name}}/logger"
+    log "github.com/sirupsen/logrus"
 )
 
 func Run() {
@@ -13,5 +13,5 @@ func Run() {
     address := fmt.Sprintf("%v:%v", host, port)
     router := runRoute()
 
-    log.Logger.Fatal(http.ListenAndServe(address, router))
+    log.Fatal(http.ListenAndServe(address, router))
 }

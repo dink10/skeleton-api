@@ -1,16 +1,16 @@
 package server
 
 import (
-	"github.com/sirupsen/logrus"
-	"bitbucket.org/gismart/{{Name}}/logger"
 	"fmt"
-	"github.com/go-chi/chi/middleware"
 	"net/http"
 	"time"
+
+	"github.com/go-chi/chi/middleware"
+	log "github.com/sirupsen/logrus"
 )
 
 func RequestLogger() func(next http.Handler) http.Handler {
-	return middleware.RequestLogger(&requestLogger{logger.Logger})
+	return middleware.RequestLogger(&requestLogger{log.StandardLogger()})
 }
 
 type requestLogger struct {
