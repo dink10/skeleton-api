@@ -3,28 +3,32 @@ package logger
 import (
     "bitbucket.org/gismart/{{Name}}/config"
     "github.com/sirupsen/logrus"
-    "github.com/evalphobia/logrus_sentry"
+    sentry "github.com/evalphobia/logrus_sentry"
+    "github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 )
 
-var Logger *logrus.Logger
-
 func init() {
-    Logger = logrus.New()
-    Logger.Formatter = &logrus.JSONFormatter{}
+	log.SetFormatter(&log.JSONFormatter{})
+	log.ParseLevel(config.Config.Logger.LogLevel)
 
-    lvl, err := logrus.ParseLevel(config.Config.Logger.LogLevel)
-    if err != nil {
-        logrus.Fatalf("Failed to parse log level. %v", err)
-    }
-    Logger.Level = lvl
+	lvl, err := log.ParseLevel(config.Config.Logger.LogLevel)
+	if err != nil {
+		log.Fatalf("Failed to parse log level: %v", err)
+	}
+	log.SetLevel(lvl)
 
-    hook, err := logrus_sentry.NewSentryHook(config.Config.Logger.SentryDSN, []logrus.Level{
-        logrus.PanicLevel,
-        logrus.FatalLevel,
-        logrus.ErrorLevel,
-    })
+	hook, err := sentry.NewSentryHook(config.Config.Logger.SentryDSN, []log.Level{
+		log.PanicLevel,
+		log.FatalLevel,
+		log.ErrorLevel,
+	})
 
-    if err == nil {
-        Logger.Hooks.Add(hook)
-    }
+	if err != nil {
+		log.Print(errors.Wrap(err, "logger init sentry hook"))
+	}
+
+	if hook != nil {
+		log.AddHook(hook)
+	}
 }
