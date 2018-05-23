@@ -16,8 +16,10 @@ func runRoute() http.Handler {
     r.Use(middleware.RequestID)
     r.Use(RequestLogger())
     r.Use(middleware.Recoverer)
+    r.Use(middleware.StripSlashes)
 
-    r.Get("/health/", api.HealthCheck)
+    r.Get("/health", api.HealthCheck)
+    r.Get("/status", api.Status)
 
     return r
 }
