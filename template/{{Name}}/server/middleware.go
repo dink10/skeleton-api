@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/middleware"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -14,18 +15,18 @@ func RequestLogger() func(next http.Handler) http.Handler {
 }
 
 type requestLogger struct {
-	Logger *logrus.Logger
+	Logger *log.Logger
 }
 
 func (l *requestLogger) NewLogEntry(r *http.Request) middleware.LogEntry {
-	entry := &requestLoggerEntry{Logger: logrus.NewEntry(l.Logger)}
+	entry := &requestLoggerEntry{Logger: log.NewEntry(l.Logger)}
 
 	scheme := "http"
 	if r.TLS != nil {
 		scheme = "https"
 	}
 
-	logFields := logrus.Fields{
+	logFields := log.Fields{
 		"ts":          time.Now().UTC().Format(time.RFC1123),
 		"http_scheme": scheme,
 		"http_proto":  r.Proto,
@@ -47,11 +48,11 @@ func (l *requestLogger) NewLogEntry(r *http.Request) middleware.LogEntry {
 }
 
 type requestLoggerEntry struct {
-	Logger logrus.FieldLogger
+	Logger log.FieldLogger
 }
 
 func (l *requestLoggerEntry) Write(status, bytes int, elapsed time.Duration) {
-	l.Logger = l.Logger.WithFields(logrus.Fields{
+	l.Logger = l.Logger.WithFields(log.Fields{
 		"resp_status":       status,
 		"resp_bytes_length": bytes,
 		"resp_elapsed_ms":   float64(elapsed.Nanoseconds()) / 1000000.0,
@@ -61,13 +62,16 @@ func (l *requestLoggerEntry) Write(status, bytes int, elapsed time.Duration) {
 }
 
 func (l *requestLoggerEntry) Panic(v interface{}, stack []byte) {
-	l.Logger = l.Logger.WithFields(logrus.Fields{
+	l.Logger = l.Logger.WithFields(log.Fields{
 		"stack": string(stack),
 		"panic": fmt.Sprintf("%+v", v),
 	})
 }
 
-func GetLogEntry(r *http.Request) logrus.FieldLogger {
-	entry := middleware.GetLogEntry(r).(*requestLoggerEntry)
-	return entry.Logger
+func GetLogEntry(r *http.Request) (log.FieldLogger, error) {
+	entry, ok := middleware.GetLogEntry(r).(*requestLoggerEntry)
+	if !ok {
+		return nil, errors.New("Unable to cast to 'requestLoggerEntry'")
+	}
+	return entry.Logger, nil
 }
