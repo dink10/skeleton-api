@@ -4,6 +4,7 @@ import (
     "bitbucket.org/gismart/{{Name}}/config"
     "bitbucket.org/gismart/{{Name}}/server"
     log "github.com/sirupsen/logrus"
+    _ "bitbucket.org/gismart/{{Name}}/logger"
 )
 
 var cfg = config.Config
