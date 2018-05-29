@@ -10,7 +10,6 @@ import (
 
 func init() {
 	log.SetFormatter(&log.JSONFormatter{})
-	log.ParseLevel(config.Config.Logger.LogLevel)
 
 	lvl, err := log.ParseLevel(config.Config.Logger.LogLevel)
 	if err != nil {

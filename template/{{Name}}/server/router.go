@@ -6,6 +6,7 @@ import (
     "github.com/go-chi/chi/middleware"
     "bitbucket.org/gismart/{{Name}}/api"
     "github.com/go-chi/render"
+    log "bitbucket.org/gismart/marketingtool/logger"
 )
 
 func runRoute() http.Handler {
@@ -14,7 +15,7 @@ func runRoute() http.Handler {
     r.Use(render.SetContentType(render.ContentTypeJSON))
 
     r.Use(middleware.RequestID)
-    r.Use(RequestLogger())
+    r.Use(log.RequestLogger())
     r.Use(middleware.Recoverer)
     r.Use(middleware.StripSlashes)
 
