@@ -2,7 +2,6 @@ package logger
 
 import (
     "bitbucket.org/gismart/{{Name}}/config"
-    "github.com/sirupsen/logrus"
     sentry "github.com/evalphobia/logrus_sentry"
     "github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
