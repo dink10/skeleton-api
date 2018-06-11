@@ -4,9 +4,9 @@ import (
     "net/http"
     "github.com/go-chi/chi"
     "github.com/go-chi/chi/middleware"
-    "bitbucket.org/gismart/{{Name}}/api"
+    "bitbucket.org/gismart/{{Name}}/app"
     "github.com/go-chi/render"
-    log "bitbucket.org/gismart/marketingtool/logger"
+    log "bitbucket.org/gismart/{{Name}}/logger"
 )
 
 func runRoute() http.Handler {
@@ -19,8 +19,8 @@ func runRoute() http.Handler {
     r.Use(middleware.Recoverer)
     r.Use(middleware.StripSlashes)
 
-    r.Get("/health", api.HealthCheck)
-    r.Get("/status", api.Status)
+    r.Get("/health", app.HealthCheck)
+    r.Get("/status", app.Status)
 
     return r
 }
