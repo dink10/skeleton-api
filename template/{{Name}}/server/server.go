@@ -7,11 +7,11 @@ import (
     log "github.com/sirupsen/logrus"
 )
 
-func Run() {
+func Run(datadogWebServiceName string) {
     host := cfg.Config.Server.Host
     port := cfg.Config.Server.Port
     address := fmt.Sprintf("%v:%v", host, port)
-    router := runRoute()
+    router := runRoute(datadogWebServiceName)
 
     log.Fatal(http.ListenAndServe(address, router))
 }
