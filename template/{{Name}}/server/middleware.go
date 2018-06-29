@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"fmt"
 	nettrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
-	cfg "bitbucket.org/gismart/piano2/config"
+	cfg "bitbucket.org/gismart/{{Name}}/config"
 )
 
 // Tracer enables tracing for single http request with correct resource name
