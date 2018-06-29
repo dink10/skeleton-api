@@ -17,13 +17,9 @@ func init() {
 
 func main() {
 
-    datadogEnv := os.Getenv("DATADOG_ENV")
-    if datadogEnv == "" {
-        datadogEnv = "stage"
+    if cfg.Logger.DataDogEnv == "" {
+        cfg.Logger.DataDogEnv = "stage"
     }
 
-    datadogWebServiceName := fmt.Sprintf("{{projectName}}web-%s", datadogEnv)
-
-    server.Run(datadogWebServiceName)
-
+    server.Run()
 }

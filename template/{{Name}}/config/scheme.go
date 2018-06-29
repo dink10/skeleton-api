@@ -13,20 +13,21 @@ package config
 //        Port int    `config:"srv-port, default=8080"`
 //  }
 
-type schema struct{
-    Server struct {
-        Host string `config:"srv-host"`
-        Port int    `config:"srv-port"`
-    }
-    Database struct {
-        Host     string `config:"db-host"`
-        Port     int    `config:"db-port"`
-        Name     string `config:"db-name"`
-        User     string `config:"db-user"`
-        Password string `config:"db-password"`
-    }
-    Logger struct {
-        LogLevel    string `config:"loglevel"`
-        SentryDSN   string `config:"sentry-dsn"`
-    }
+type schema struct {
+	Server struct {
+		Host string `config:"srv-host"`
+		Port int    `config:"srv-port"`
+	}
+	Database struct {
+		Host     string `config:"db-host"`
+		Port     int    `config:"db-port"`
+		Name     string `config:"db-name"`
+		User     string `config:"db-user"`
+		Password string `config:"db-password"`
+	}
+	Logger struct {
+		LogLevel   string `config:"loglevel"`
+		SentryDSN  string `config:"sentry-dsn"`
+		DataDogEnv string `config:"datadog-env"`
+	}
 }

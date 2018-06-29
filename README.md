@@ -20,5 +20,3 @@ This is a REST-API server template with some predefined stuff. Don't waste time 
     ```
     $ boilr template use skeleton $GOPATH/src/bitbucket.org/gismart
     ```
-####Note on DataDog APM usage
-Change DataDog {{projectName}} in main.go to your project name. To run DataDog locally start DataDog APM Agent. 

@@ -9,12 +9,12 @@ import (
     log "bitbucket.org/gismart/{{Name}}/logger"
 )
 
-func runRoute(datadogWebServiceName string) http.Handler {
+func runRoute() http.Handler {
     r := chi.NewRouter()
 
     r.Use(render.SetContentType(render.ContentTypeJSON))
 
-    r.Use(Tracer(datadogWebServiceName))
+    r.Use(Tracer)
     r.Use(middleware.RequestID)
     r.Use(log.RequestLogger())
     r.Use(middleware.Recoverer)
