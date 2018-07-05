@@ -26,8 +26,9 @@ type schema struct {
 		Password string `config:"db-password"`
 	}
 	Logger struct {
-		LogLevel   string `config:"loglevel"`
-		SentryDSN  string `config:"sentry-dsn"`
-		DataDogEnv string `config:"datadog-env"`
+		LogLevel         string `config:"loglevel"`
+		SentryDSN        string `config:"sentry-dsn"`
+		DataDogEnv       string `config:"datadog-env"`
+		DataDogAgentAddr string `config:"datadog-agent-addr"`
 	}
 }

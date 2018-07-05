@@ -17,9 +17,5 @@ func init() {
 
 func main() {
 
-    if cfg.Logger.DataDogEnv == "" {
-        cfg.Logger.DataDogEnv = "stage"
-    }
-
     server.Run()
 }
