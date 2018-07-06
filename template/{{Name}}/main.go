@@ -5,6 +5,8 @@ import (
     "bitbucket.org/gismart/{{Name}}/server"
     log "github.com/sirupsen/logrus"
     _ "bitbucket.org/gismart/{{Name}}/logger"
+    "os"
+    "fmt"
 )
 
 var cfg = config.Config
@@ -14,6 +16,6 @@ func init() {
 }
 
 func main() {
-    server.Run()
 
+    server.Run()
 }

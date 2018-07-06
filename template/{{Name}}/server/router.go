@@ -14,6 +14,7 @@ func runRoute() http.Handler {
 
     r.Use(render.SetContentType(render.ContentTypeJSON))
 
+    r.Use(Tracer)
     r.Use(middleware.RequestID)
     r.Use(log.RequestLogger())
     r.Use(middleware.Recoverer)
