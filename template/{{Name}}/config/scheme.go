@@ -15,8 +15,8 @@ package config
 
 type schema struct {
 	Server struct {
-		Host string `config:"srv-host"`
-		Port int    `config:"srv-port"`
+		Host string `config:"srv-host, default=localhost"`
+		Port int    `config:"srv-port, default=8080"`
 	}
 	Database struct {
 		Host     string `config:"db-host"`
@@ -26,7 +26,7 @@ type schema struct {
 		Password string `config:"db-password"`
 	}
 	Logger struct {
-		LogLevel         string `config:"loglevel"`
+		LogLevel         string `config:"loglevel, default=debug"`
 		SentryDSN        string `config:"sentry-dsn"`
 		DataDogEnv       string `config:"datadog-env"`
 		DataDogAgentAddr string `config:"datadog-agent-addr"`
