@@ -1,32 +1,36 @@
 package logger
 
 import (
-    "bitbucket.org/gismart/{{Name}}/config"
     sentry "github.com/evalphobia/logrus_sentry"
     "github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"fmt"
 )
 
-func init() {
+// InitLogger initialises logger
+func InitLogger(logLevel, sentryDSN string) {
 	log.SetFormatter(&log.JSONFormatter{})
 
-	lvl, err := log.ParseLevel(config.Config.Logger.LogLevel)
+	lvl, err := log.ParseLevel(logLevel)
 	if err != nil {
-		log.Fatalf("Failed to parse log level: %v", err)
+		panic(fmt.Sprintf("Failed to parse log level: %s, %v", logLevel, err))
 	}
 	log.SetLevel(lvl)
 
-	hook, err := sentry.NewSentryHook(config.Config.Logger.SentryDSN, []log.Level{
-		log.PanicLevel,
-		log.FatalLevel,
-		log.ErrorLevel,
-	})
+	if sentryDSN != "" {
+		hook, err := sentry.NewSentryHook(sentryDSN, []log.Level{
+			log.PanicLevel,
+			log.FatalLevel,
+			log.ErrorLevel,
+		})
+		if err != nil {
+			log.Error(errors.Wrap(err, "can not init sentry hook"))
+		}
 
-	if err != nil {
-		log.Print(errors.Wrap(err, "logger init sentry hook"))
-	}
-
-	if hook != nil {
-		log.AddHook(hook)
+		if hook != nil {
+			log.AddHook(hook)
+		} else {
+			log.Warnf("can not add sentry hook, %s", sentryDSN)
+		}
 	}
 }

@@ -20,8 +20,7 @@ func runRoute() http.Handler {
     r.Use(middleware.Recoverer)
     r.Use(middleware.StripSlashes)
 
-    r.Get("/health", app.HealthCheck)
-    r.Get("/status", app.Status)
+    r.Get("/health", app.Health)
 
     return r
 }

@@ -3,19 +3,14 @@ package main
 import (
     "bitbucket.org/gismart/{{Name}}/config"
     "bitbucket.org/gismart/{{Name}}/server"
-    log "github.com/sirupsen/logrus"
-    _ "bitbucket.org/gismart/{{Name}}/logger"
-    "os"
-    "fmt"
+    "bitbucket.org/gismart/{{Name}}/logger"
 )
 
-var cfg = config.Config
-
-func init() {
-    log.Infof("application started on %v:%v", cfg.Server.Host, cfg.Server.Port)
-}
 
 func main() {
+    config.InitConfig()
+    logger.InitLogger(config.Config.Logger.LogLevel, config.Config.Logger.SentryDSN)
 
-    server.Run()
+    server.Run(config.Config.Server.Host, config.Config.Server.Port)
 }
+
