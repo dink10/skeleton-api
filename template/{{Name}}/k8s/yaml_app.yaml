@@ -1,0 +1,118 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: {{Name}}-app
+  name: {{Name}}-app
+spec:
+  replicas: 2
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: {{Name}}-app
+    spec:
+      containers:
+      - name: app
+        image: 978577353296.dkr.ecr.eu-west-1.amazonaws.com/{{Name}}:APPIMAGEPLACEHOLDER
+        env:
+        - name: ALLOWED_ORIGINS
+          valueFrom:
+            configMapKeyRef:
+              name: env-configmap
+              key: ALLOWED_ORIGINS
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: env-configmap
+              key: POSTGRES_DB
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: env-configmap
+              key: DB_HOST
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: env-secrets
+              key: db_password
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: env-configmap
+              key: DB_PORT
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: env-secrets
+              key: db_username
+        - name: TRACER_SERVICE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: env-configmap
+              key: TRACER_SERVICE_NAME
+        - name: TRACER_AGENT_ADDR
+          value: "datadog-agent.kube-system.svc.cluster.local:8126"
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: customvars
+              key: LOG_LEVEL
+        - name: POSTGRES_MAX_OPEN_CONN
+          value: "10"
+        - name: SRV_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: customvars
+              key: SRV_HOST
+        - name: TRACER_TRACING_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              name: customvars
+              key: TRACING_ENABLED
+        - name: OAUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: google-secrets
+              key: GOOGLE_LOGIN_CLIENT_ID
+        - name: OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: google-secrets
+              key: GOOGLE_LOGIN_CLIENT_SECRET
+        - name: OAUTH_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secret
+              key: jwt-secret
+        - name: CREDENTIALS
+          value: "true"
+        - name: ALLOWED_METHODS
+          value: "GET,POST,PUT,DELETE,OPTIONS"
+        - name: ALLOWED_HEADERS
+          value: "Origin,X-Requested-With,Content-Type,Accept,X-Auth,Purchase-Token"
+        - name: HTTP_TIMEOUT
+          value: "2"
+        livenessProbe:
+          tcpSocket:
+            port: 8888
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8888
+            scheme: HTTP
+        ports:
+        - containerPort: 8888
+        resources:
+          requests:
+            cpu: 250m
+            memory: 300Mi
+          limits:
+            cpu: 1
+            memory: 1Gi
+      imagePullSecrets:
+        - name: eu-west-1-ecr-registry

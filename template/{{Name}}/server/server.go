@@ -1,21 +1,12 @@
 package server
 
 import (
-    "fmt"
-    "net/http"
-    cfg "bitbucket.org/gismart/{{Name}}/config"
-    log "github.com/sirupsen/logrus"
-    "gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
+	log "github.com/sirupsen/logrus"
+	"net/http"
 )
 
-func Run(host string, port int) {
-    address := fmt.Sprintf("%v:%v", host, port)
-    router := runRoute()
+func Run(address string, withTracing bool) {
+	router := runRoute(withTracing)
 
-    if cfg.Config.Logger.DataDogAgentAddr != "" &&  cfg.Config.Logger.DataDogEnv != "" {
-        tracer.Start(tracer.WithAgentAddr(cfg.Config.Logger.DataDogAgentAddr))
-        defer tracer.Stop()
-    }
-
-    log.Fatal(http.ListenAndServe(address, router))
+	log.Fatal(http.ListenAndServe(address, router))
 }

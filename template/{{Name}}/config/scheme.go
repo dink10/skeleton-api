@@ -14,21 +14,36 @@ package config
 //  }
 
 type schema struct {
-	Server struct {
-		Host string `config:"srv-host, default=localhost"`
-		Port int    `config:"srv-port, default=8080"`
+	AllowedOrigins string `split_words:"true" required="true" `
+	AllowedHeaders string `split_words:"true" required="true"`
+	AllowedMethods string `split_words:"true" required="true"`
+	Credentials    string `split_words:"true" required="true"`
+	HTTPTimeout    int    `split_words:"true" required="true"`
+	LogLevel       string `split_words:"true" required="true"`
+	Server         struct {
+		Host string `required="true"`
+		Port int    `required="true"`
 	}
-	Database struct {
-		Host     string `config:"db-host"`
-		Port     int    `config:"db-port"`
-		Name     string `config:"db-name"`
-		User     string `config:"db-user"`
-		Password string `config:"db-password"`
+	Postgres struct {
+		Host         string `required="true"`
+		Port         int    `required="true"`
+		DB           string `required="true"`
+		User     string `required="true"`
+		Password     string `required="true"`
+		MaxOpenConns int    `split_words:"true" required="true"`
 	}
-	Logger struct {
-		LogLevel         string `config:"loglevel, default=debug"`
-		SentryDSN        string `config:"sentry-dsn"`
-		DataDogEnv       string `config:"datadog-env"`
-		DataDogAgentAddr string `config:"datadog-agent-addr"`
+	Oauth    struct {
+		ClientID     string `split_words:"true" required="true"`
+		ClientSecret string `split_words:"true" required="true"`
+		JWTSecret    string `split_words:"true" required="true"`
 	}
+	DD struct {
+		ServiceName    string `split_words:"true" required="true"`
+		AgentAddr      string `split_words:"true" required="true"`
+		TracingEnabled bool   `split_words:"true" required="true"`
+	}
+}
+
+func NewSchema() schema {
+	return schema{}
 }

@@ -1,26 +1,46 @@
 package server
 
 import (
-    "net/http"
-    "github.com/go-chi/chi"
-    "github.com/go-chi/chi/middleware"
-    "bitbucket.org/gismart/{{Name}}/app"
-    "github.com/go-chi/render"
-    log "bitbucket.org/gismart/{{Name}}/logger"
+	"net/http"
+
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/jwtauth"
+
+	"bitbucket.org/gismart/ddtracer"
+
+	"bitbucket.org/gismart/{{Name}}/app/auth"
+	"bitbucket.org/gismart/{{Name}}/app/health"
+	"bitbucket.org/gismart/{{Name}}/config"
+	log "bitbucket.org/gismart/{{Name}}/services/logger"
+	"bitbucket.org/gismart/{{Name}}/services/swagger"
 )
 
-func runRoute() http.Handler {
-    r := chi.NewRouter()
+func runRoute(withTracing bool) http.Handler {
+	r := chi.NewRouter()
+	tokenAuth := auth.GetTokenAuth()
 
-    r.Use(render.SetContentType(render.ContentTypeJSON))
+	r.Use(middleware.RequestID)
+	r.Use(log.RequestLogger())
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.StripSlashes)
+	r.Use(CORSMiddlewareGenereator(config.Config.AllowedOrigins, config.Config.AllowedMethods, config.Config.AllowedHeaders, config.Config.Credentials))
 
-    r.Use(Tracer)
-    r.Use(middleware.RequestID)
-    r.Use(log.RequestLogger())
-    r.Use(middleware.Recoverer)
-    r.Use(middleware.StripSlashes)
+	r.Get("/health", health.Health)
+	r.Mount("/swagger", swagger.Router())
 
-    r.Get("/health", app.Health)
+	r.Group(func(r chi.Router) {
+		if withTracing {
+			r.Use(ddtracer.TraceMiddleware)
+		}
+		r.Use(storageMiddlewareGenereator(withTracing))
+		r.Mount("/auth", auth.Router(verifier(tokenAuth), jwtauth.Authenticator, authCtx))
 
-    return r
+		// Authentication protected routes
+		r.Group(func(r chi.Router) {
+			r.Use(verifier(tokenAuth), jwtauth.Authenticator, authCtx)
+		})
+	})
+
+	return r
 }
