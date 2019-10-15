@@ -13,7 +13,7 @@ import (
 	"bitbucket.org/gismart/{{Name}}/app/health"
 	"bitbucket.org/gismart/{{Name}}/config"
 	log "bitbucket.org/gismart/{{Name}}/services/logger"
-	"bitbucket.org/gismart/{{Name}}/services/swagger"
+	"bitbucket.org/gismart/{{Name}}/swagger"
 )
 
 func runRoute(withTracing bool) http.Handler {
