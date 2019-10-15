@@ -19,7 +19,7 @@ import (
 type testModel struct{}
 
 func (testModel) FilteredFields() []string {
-  return []string{"application_id", "type_id", "id", "cardinality", "name", "created_at"}
+  return []string{"id", "cardinality", "name", "created_at"}
 }
 
 func (testModel) TableName() string {
