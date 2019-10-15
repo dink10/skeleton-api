@@ -13,12 +13,12 @@ import (
 	"bitbucket.org/gismart/{{Name}}/app/health"
 	"bitbucket.org/gismart/{{Name}}/config"
 	log "bitbucket.org/gismart/{{Name}}/services/logger"
+	"bitbucket.org/gismart/{{Name}}/services/authorisation"
 	"bitbucket.org/gismart/{{Name}}/swagger"
 )
 
 func runRoute(withTracing bool) http.Handler {
 	r := chi.NewRouter()
-	tokenAuth := auth.GetTokenAuth()
 
 	r.Use(middleware.RequestID)
 	r.Use(log.RequestLogger())
@@ -34,11 +34,11 @@ func runRoute(withTracing bool) http.Handler {
 			r.Use(ddtracer.TraceMiddleware)
 		}
 		r.Use(storageMiddlewareGenereator(withTracing))
-		r.Mount("/auth", auth.Router(verifier(tokenAuth), jwtauth.Authenticator, authCtx))
+		r.Mount("/auth", auth.Router(authorisation.Verifier(), jwtauth.Authenticator, authorisation.AuthCtx))
 
 		// Authentication protected routes
 		r.Group(func(r chi.Router) {
-			r.Use(verifier(tokenAuth), jwtauth.Authenticator, authCtx)
+			r.Use(authorisation.Verifier(), jwtauth.Authenticator, authorisation.AuthCtx)
 		})
 	})
 

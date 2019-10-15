@@ -1,18 +1,10 @@
 package auth
 
 import (
-	"context"
-	"encoding/json"
 	"net/http"
-	"net/url"
-	"time"
 
-	"github.com/dgrijalva/jwt-go"
-
-	"bitbucket.org/gismart/{{Name}}/app/models"
-	"bitbucket.org/gismart/{{Name}}/config"
 	"bitbucket.org/gismart/{{Name}}/services/render"
-	"bitbucket.org/gismart/{{Name}}/services/request"
+	"bitbucket.org/gismart/{{Name}}/services/authorisation"
 )
 
 // Create godoc
@@ -37,7 +29,7 @@ func me(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := setCookie(w, user); err != nil {
+	if err := authorisation.SetCookie(w, user); err != nil {
 		render.MustRenderJSONError(w, r, render.HTTPBadRequest(err))
 		return
 	}
@@ -62,7 +54,7 @@ func me(w http.ResponseWriter, r *http.Request) {
 // @Router /auth/login [get]
 func login(w http.ResponseWriter, r *http.Request) {
 	code := r.URL.Query().Get("code")
-	data, err := getUserInfoFromGoogle(code, r.Context())
+	data, err := authorisation.GetUserInfoFromGoogle(code, r.Context())
 
 	if err != nil {
 		render.MustRenderJSONError(w, r, render.HTTPBadRequest(err))
@@ -80,7 +72,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := setCookie(w, data); err != nil {
+	if err := authorisation.SetCookie(w, data); err != nil {
 		render.MustRenderJSONError(w, r, render.HTTPBadRequest(err))
 		return
 	}
@@ -101,7 +93,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} render.ErrorResponse
 // @Router /auth/logout [get]
 func logout(w http.ResponseWriter, r *http.Request) {
-	deleteCookie(w)
+	authorisation.DeleteCookie(w)
 
 	db, err := getStorageFromContext(r.Context())
 	if err != nil {
@@ -115,62 +107,4 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
-}
-
-func setCookie(w http.ResponseWriter, user *models.User) error {
-	_, jwtString, err := GetTokenAuth().Encode(jwt.MapClaims{"email": user.Email})
-
-	if err != nil {
-		return err
-	}
-
-	cookie := BaseCookie
-
-	cookie.Value = jwtString
-	cookie.MaxAge = int(cookieAge / time.Second)
-	cookie.Domain = config.Config.Server.Host
-
-	http.SetCookie(w, &cookie)
-
-	return nil
-}
-
-func deleteCookie(w http.ResponseWriter) {
-	cookie := BaseCookie
-
-	cookie.Value = ""
-	cookie.MaxAge = 0
-	cookie.Domain = config.Config.Server.Host
-
-	http.SetCookie(w, &cookie)
-}
-
-func getUserInfoFromGoogle(code string, ctx context.Context) (*models.User, error) {
-	token, err := getOAuthConfig().Exchange(ctx, code)
-
-	if err != nil {
-		return nil, err
-	}
-
-	u, err := url.Parse(oauthInfoURL)
-	if err != nil {
-		return nil, err
-	}
-
-	q := u.Query()
-	q.Set("access_token", token.AccessToken)
-	u.RawQuery = q.Encode()
-
-	_, resp, err := request.MakeRequest(ctx, u, "GET", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	var userInfo models.User
-
-	if err := json.Unmarshal(resp, &userInfo); err != nil {
-		return nil, err
-	}
-
-	return &userInfo, err
 }
