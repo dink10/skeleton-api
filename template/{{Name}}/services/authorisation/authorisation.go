@@ -28,7 +28,8 @@ func SetCookie(w http.ResponseWriter, user *models.User) error {
   cookie.MaxAge = int(cookieAge / time.Second)
   cookie.Domain = config.Config.Server.Host
   
-  http.SetCookie(w, &cookie)
+  // i work with the http.Header because of http.SetCookie use Header().Add() instead of Header().Set()
+  w.Header().Set("Set-Cookie", cookie.String())
   
   return nil
 }
@@ -40,7 +41,7 @@ func DeleteCookie(w http.ResponseWriter) {
   cookie.MaxAge = 0
   cookie.Domain = config.Config.Server.Host
   
-  http.SetCookie(w, &cookie)
+  w.Header().Set("Set-Cookie", cookie.String())
 }
 
 func GetUserInfoFromGoogle(code string, ctx context.Context) (*models.User, error) {
