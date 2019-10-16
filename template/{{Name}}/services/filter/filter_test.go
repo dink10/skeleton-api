@@ -50,8 +50,6 @@ var (
   }
   validFilter = `{
 		"name":           "test",
-		"type_id":        1.0,
-		"application_id": 1.0,
 		"cardinality":    1.0,
 		"created_at":     "123456",
 		"id":             1.0
