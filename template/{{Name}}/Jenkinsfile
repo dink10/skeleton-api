@@ -1,20 +1,20 @@
 @Library('gismart-devops')
 import org.gismart.DevOps
 z = new org.gismart.DevOps()
-envSelector = new org.gismart.SubscriptionTool()
+envSelector = new org.gismart.{{Name}}()
 
-imageName = '978577353296.dkr.ecr.eu-west-1.amazonaws.com/subscriptiontool'
+imageName = '978577353296.dkr.ecr.eu-west-1.amazonaws.com/{{Name}}'
 
 def deployDev() {
     node("awscli") {
         stage("Deploy Dev") {
-            z.deployApp('devops1','devops1-default-eks','devops1-default-subscriptiontool','k8s/configmaps/develop/custom.yaml')
-            z.applyDbMigration('devops1','devops1-default-eks','devops1-default-subscriptiontool','k8s/yaml_migration.yaml','1800s')
-            z.deployApp('devops1','devops1-default-eks','devops1-default-subscriptiontool','k8s/yaml_app.yaml')
+            z.deployApp('devops1','devops1-default-eks','devops1-default-{{Name}}','k8s/configmaps/develop/custom.yaml')
+            z.applyDbMigration('devops1','devops1-default-eks','devops1-default-{{Name}}','k8s/yaml_migration.yaml','1800s')
+            z.deployApp('devops1','devops1-default-eks','devops1-default-{{Name}}','k8s/yaml_app.yaml')
 
             sh "kubectl scale --replicas=1 -f k8s/yaml_app.yaml "
 
-            sh "sleep 30; kubectl get po -n devops1-default-subscriptiontool"
+            sh "sleep 30; kubectl get po -n devops1-default-{{Name}}"
         }
     }
 }
@@ -22,27 +22,11 @@ def deployDev() {
 def deployStage() {
     node("awscli") {
         stage("Deploy Stageing") {
-            z.deployApp('prod','prod-defaulting-eks','prod-stageing-subscriptiontool','k8s/configmaps/stage/custom.yaml')
-            z.applyDbMigration('prod','prod-defaulting-eks','prod-stageing-subscriptiontool','k8s/yaml_migration.yaml','1800s')
-            z.deployApp('prod','prod-defaulting-eks','prod-stageing-subscriptiontool','k8s/yaml_app.yaml')
+            z.deployApp('prod','prod-defaulting-eks','prod-stageing-{{Name}}','k8s/configmaps/stage/custom.yaml')
+            z.applyDbMigration('prod','prod-defaulting-eks','prod-stageing-{{Name}}','k8s/yaml_migration.yaml','1800s')
+            z.deployApp('prod','prod-defaulting-eks','prod-stageing-{{Name}}','k8s/yaml_app.yaml')
 
-            sh "sleep 30; kubectl get po -n prod-stageing-subscriptiontool"
-        }
-    }
-}
-
-def deployPreProd() {
-    node("awscli") {
-        stage("Deploy Pre-Prod") {
-            echo "Replicating DB from prod"
-            z.migrateDbFromUpstream('prod','prod-defaulting-eks','prod-defaulting-subscriptiontool','prod-preprod-subscriptiontool')
-            z.deployApp('prod','prod-defaulting-eks','prod-preprod-subscriptiontool','k8s/configmaps/preprod/custom.yaml')
-            z.applyDbMigration('prod','prod-defaulting-eks','prod-preprod-subscriptiontool','k8s/yaml_migration.yaml','1800s')
-            sh "aws s3 rm s3://prod-preprod-subscriptiontool/ --recursive --profile prod"
-            sh "aws s3 cp s3://prod-defaulting-subscriptiontool/ s3://prod-preprod-subscriptiontool --recursive --profile prod --acl public-read"
-            z.deployApp('prod','prod-defaulting-eks','prod-preprod-subscriptiontool','k8s/yaml_app.yaml')
-
-            sh "sleep 30; kubectl get po -n prod-preprod-subscriptiontool"
+            sh "sleep 30; kubectl get po -n prod-stageing-{{Name}}"
         }
     }
 }
@@ -50,11 +34,11 @@ def deployPreProd() {
 def deployProd() {
     node("awscli") {
         stage("Deploy Prod") {
-            z.deployApp('prod','prod-defaulting-eks','prod-defaulting-subscriptiontool','k8s/configmaps/prod/custom.yaml')
-            z.applyDbMigration('prod','prod-defaulting-eks','prod-defaulting-subscriptiontool','k8s/yaml_migration.yaml','1800s')
-            z.deployApp('prod','prod-defaulting-eks','prod-defaulting-subscriptiontool','k8s/yaml_app.yaml')
+            z.deployApp('prod','prod-defaulting-eks','prod-defaulting-{{Name}}','k8s/configmaps/prod/custom.yaml')
+            z.applyDbMigration('prod','prod-defaulting-eks','prod-defaulting-{{Name}}','k8s/yaml_migration.yaml','1800s')
+            z.deployApp('prod','prod-defaulting-eks','prod-defaulting-{{Name}}','k8s/yaml_app.yaml')
 
-            sh "sleep 30; kubectl get po -n prod-defaulting-subscriptiontool"
+            sh "sleep 30; kubectl get po -n prod-defaulting-{{Name}}"
         }
     }
 }
@@ -80,10 +64,10 @@ node("awscli") {
 }
 
 switch(deployAppEnv) {
-    case "devops1-default-subscriptiontool":
+    case "devops1-default-{{Name}}":
         deployDev()
         break
-    case "prod-stageing-subscriptiontool":
+    case "prod-stageing-{{Name}}":
         deployStage()
         stage('Approve stage environment'){
             input "Is Staging ok?"
@@ -92,7 +76,7 @@ switch(deployAppEnv) {
             z.promoteImage(imageName,latestImageTag,'stage')
         }
         break
-    case "prod-defaulting-subscriptiontool":
+    case "prod-defaulting-{{Name}}":
         deployStage()
         stage('Approve stage environment'){
             input "Is Staging ok?"
@@ -108,7 +92,7 @@ switch(deployAppEnv) {
             z.promoteImage(imageName,latestImageTag,'prod')
         }
         break
-    case "prod-preprod-subscriptiontool":
+    case "prod-preprod-{{Name}}":
         deployPreProd()
         break
 }
