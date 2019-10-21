@@ -1,24 +1,27 @@
 version: '3'
 services:
   {{Name}}:
-    build: .
+    build:
+      context: .
+      args:
+        - HTTP_TIMEOUT=3
     image: 978577353296.dkr.ecr.eu-west-1.amazonaws.com/{{Name}}:${VERSION:-latest}
     environment:
       - LOG_LEVEL=warning
       - POSTGRES_USER=testuser
       - POSTGRES_PASSWORD=testpassword
       - POSTGRES_DB={{Name}}
-      - POSTGRES_HOST=127.0.0.1
+      - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
-      - OAUTH_CLIENT_ID=
-      - OAUTH_CLIENT_SECRET=
+      - OAUTH_CLIENT_ID=1234
+      - OAUTH_CLIENT_SECRET=1234
       - OAUTH_JWT_SECRET=test
-      - DD_AGENT_ADDR=
+      - DD_AGENT_ADDR=1234
       - DD_SERVICE_NAME={{Name}}
       - DD_TRACING_ENABLED=false
       - ALLOWED_ORIGINS="http://localhost:8081"
-      - SERVER_PORT=8081
-      - SERVER_HOST=127.0.0.1
+      - SERVER_PORT=8888
+      - SERVER_HOST={{Name}}
       - POSTGRES_MAX_OPEN_CONNS=100
       - HTTP_TIMEOUT=3
       - ALLOWED_METHODS=GET,POST,PUT,DELETE,OPTIONS
